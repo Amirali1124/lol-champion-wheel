@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Summoner's Roulette — LoL Champion Wheel</title>
+<meta name="description" content="Spin a 3D wheel to randomly pick a League of Legends champion.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Russo+One&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip-link" href="#wheel-region">Skip to the wheel</a>
+
+<div class="backdrop" aria-hidden="true"></div>
+
+<main class="shell">
+
+  <header class="masthead">
+    <p class="eyebrow">Random champion draft</p>
+    <h1 class="title">Summoner's&nbsp;Roulette</h1>
+    <p class="subtitle">Spin the wheel. Lock in your pick.</p>
+  </header>
+
+  <div class="layout">
+
+    <!-- ─────────────────────────  WHEEL  ───────────────────────── -->
+    <section class="stage" id="wheel-region" aria-labelledby="wheel-heading">
+      <h2 class="sr-only" id="wheel-heading">Champion wheel</h2>
+
+      <div class="stage__frame">
+        <div class="stage__canvas-wrap" id="canvas-wrap">
+          <canvas id="wheel-canvas" role="img" aria-label="A wheel divided into champion segments. Spin to choose one."></canvas>
+
+          <div class="pointer-fallback" aria-hidden="true"></div>
+
+          <div class="stage__badge" id="spin-badge" aria-hidden="true">Spinning</div>
+        </div>
+
+        <!-- Live readout: the champion currently under the pointer.
+             With many segments a name cannot fit on the sliver itself,
+             so it is surfaced here and updates as the wheel turns. -->
+        <div class="readout" id="readout">
+          <span class="readout__label">Under the pointer</span>
+          <span class="readout__name" id="readout-name">&nbsp;</span>
+          <span class="readout__lane" id="readout-lane">&nbsp;</span>
+        </div>
+      </div>
+
+      <!-- Result -->
+      <div class="result" id="result" hidden>
+        <div class="result__avatar" id="result-avatar" aria-hidden="true"></div>
+        <div class="result__body">
+          <p class="result__eyebrow">The wheel has chosen</p>
+          <h3 class="result__name" id="result-name">&nbsp;</h3>
+          <p class="result__roles">
+            <span class="tag" id="result-role">&nbsp;</span>
+            <span class="tag tag--muted" id="result-lanes">&nbsp;</span>
+          </p>
+        </div>
+        <div class="result__actions">
+          <button class="btn btn--primary" id="btn-copy" type="button">Copy</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────  CONTROLS  ───────────────────────── -->
+    <section class="panel" aria-labelledby="panel-heading">
+      <h2 class="sr-only" id="panel-heading">Wheel controls</h2>
+
+      <div class="panel__block">
+        <h3 class="label" id="lbl-role">Filter by lane</h3>
+        <div class="chips" role="group" aria-labelledby="lbl-role" id="role-chips"></div>
+      </div>
+
+      <div class="panel__block">
+        <label class="label" for="search">Search champions</label>
+        <div class="search">
+          <svg class="search__icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.6-3.6"></path>
+          </svg>
+          <input type="search" id="search" placeholder="e.g. Ahri" autocomplete="off" spellcheck="false">
+        </div>
+      </div>
+
+      <div class="panel__block">
+        <div class="label-row">
+          <h3 class="label" id="lbl-size">On the wheel</h3>
+          <span class="count" id="pool-count">&nbsp;</span>
+        </div>
+        <div class="segmented" role="group" aria-labelledby="lbl-size" id="size-group"></div>
+      </div>
+
+      <div class="panel__actions">
+        <button class="btn btn--spin" id="btn-spin" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2.5l2.6 5.6 6.1.7-4.6 4.1 1.3 6.1L12 15.9 6.6 19l1.3-6.1L3.3 8.8l6.1-.7z"></path>
+          </svg>
+          <span id="spin-label">Spin</span>
+        </button>
+        <button class="btn btn--ghost" id="btn-shuffle" type="button" title="Roll a new lineup of segments">
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 7h4l10 10h4"></path><path d="M3 17h4l3-3"></path><path d="M14 10l3-3h4"></path><path d="M18 4l3 3-3 3"></path><path d="M18 14l3 3-3 3"></path>
+          </svg>
+          <span>New lineup</span>
+        </button>
+      </div>
+
+      <label class="switch">
+        <input type="checkbox" id="toggle-remove" checked>
+        <span class="switch__track" aria-hidden="true"><span class="switch__thumb"></span></span>
+        <span class="switch__label">Remove winners from the pool</span>
+      </label>
+
+      <div class="panel__block">
+        <div class="label-row">
+          <h3 class="label">Recent picks</h3>
+          <button class="linkbtn" id="btn-clear" type="button">Clear</button>
+        </div>
+        <ul class="history" id="history"></ul>
+        <p class="history__empty" id="history-empty">No picks yet. Spin to start your draft.</p>
+      </div>
+    </section>
+  </div>
+
+  <footer class="footer">
+    <p>Fan-made tool. Not affiliated with Riot Games. Champion names are property of Riot Games.</p>
+    <p class="footer__hint"><kbd>Space</kbd> or <kbd>Enter</kbd> to spin</p>
+  </footer>
+</main>
+
+<p class="sr-only" role="status" aria-live="polite" id="live-region"></p>
+
+<script src="sword-art.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
