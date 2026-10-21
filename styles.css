@@ -162,6 +162,34 @@ svg { display: block; }
 
 .subtitle { margin-top: var(--s2); color: var(--fg-muted); font-size: 1.02rem; }
 
+/* the sibling tool: the Forge, at forge/ */
+.sibling-link { margin-top: var(--s3); }
+.sibling-link a {
+  display: inline-flex; align-items: center; gap: var(--s2);
+  padding: var(--s2) var(--s4);
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+  background: rgba(255,255,255,.04);
+  color: var(--fg-muted);
+  font-size: .88rem; font-weight: 500;
+  text-decoration: none;
+  transition: color var(--t-fast) var(--ease-out),
+              border-color var(--t-fast) var(--ease-out),
+              background-color var(--t-fast) var(--ease-out);
+}
+.sibling-link a::after {
+  content: ""; width: 14px; height: 14px; flex: none;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M4.5 2.5 8 6l-3.5 3.5' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 14px no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M4.5 2.5 8 6l-3.5 3.5' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 14px no-repeat;
+}
+.sibling-link a:hover {
+  color: var(--gold-hi);
+  border-color: var(--gold);
+  background: rgba(240,182,75,.10);
+}
+.sibling-link a:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
 /* ─────────────────────────────  LAYOUT  ───────────────────────────── */
 .layout {
   display: grid;

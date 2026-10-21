@@ -2,3 +2,6 @@
 .agents/
 skills-lock.json
 images.png
+node_modules/
+brag-output-*/
+.taste-skill/
